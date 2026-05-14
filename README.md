@@ -56,7 +56,7 @@ Create `config.json`:
 
 # Usage
 
-Create test folder manually:
+Create test folder manually inside folder with tool installed:
 
 ```text
 test1/
