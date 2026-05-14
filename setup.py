@@ -5,10 +5,10 @@ from setuptools import find_packages, setup
 
 try:
     with open('requirements.txt', encoding='utf-16') as fp:
-        install_requires = fp.read()
+        install_requires = fp.read().splitlines()
 except:
     with open('requirements.txt') as fp:
-        install_requires = fp.read()
+        install_requires = fp.read().splitlines()
 
 setup(
     name="testbed-recording-tool",
