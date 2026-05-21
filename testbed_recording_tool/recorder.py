@@ -10,7 +10,7 @@ from .config import config
 
 
 RECORD_DEVICE = "dmic_sv_shared"
-CHANNELS = 2
+CHANNELS = 1
 SAMPLE_FORMAT = "S32_LE"
 RECORD_WARMUP_SECONDS = 0.2
 POST_PLAYBACK_PADDING_SECONDS = 0.2
@@ -106,7 +106,7 @@ def download_file(remote_path, local_path):
 def start_recording_and_play_chirp(remote_chirp, remote_recording, sample_rate):
     arecord_parts = [
         "arecord", "-D", RECORD_DEVICE, "-c", str(CHANNELS), "-r", str(sample_rate),
-        "-f", SAMPLE_FORMAT, "-t", "wav", "-V", "stereo", "-v", remote_recording,
+        "-f", SAMPLE_FORMAT, "-t", "wav", "-v", remote_recording,
     ]
     aplay_parts = [
         "aplay", remote_chirp,

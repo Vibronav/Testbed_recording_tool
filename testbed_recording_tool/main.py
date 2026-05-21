@@ -1,8 +1,8 @@
 import argparse
 from datetime import datetime
-
 from .config import config
 from .recorder import record_with_config
+from .spectrogram import show_spectrogram
 
 
 def parse_args():
@@ -22,6 +22,11 @@ def parse_args():
         required=True,
         help="Filename for recorded wavfile. Defaults to recording_<timestamp>.wav",
     )
+    parser.add_argument(
+        "--show-spectrogram",
+        action="store_true",
+        help="Display spectrogram of the recorded audio",
+    )
     return parser.parse_args()
 
 
@@ -32,6 +37,10 @@ def main():
     config.load_from_json(args.config)
     recording_path = record_with_config(args.data_folder, output_filename)
     print(f"Recorded wavfile: {recording_path}")
+
+    if args.show_spectrogram:
+        show_spectrogram(recording_path)
+
     return 0
 
 
