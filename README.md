@@ -116,3 +116,42 @@ After playback finishes, the recording is stopped and downloaded to:
 ```text
 test1/audio/<output.wav>
 ```
+
+# Chirp generation
+
+The package also installs a chirp generator. It saves the generated wavfile in the directory where the command is run.
+
+Generate logarithmic chirp:
+
+```commandline
+chirp-generating --mode log --start-freq 100 --end-freq 24000 --sample-rate 48000 --duration 1.0 --output-filename chirp_100-24000Hz.wav
+```
+
+Generate step-wise chirp:
+
+```commandline
+chirp-generating --mode step-wise --start-freq 100 --end-freq 24000 --sample-rate 48000 --duration 2.4 --steps 12 --output-filename step_chirp_100-24000Hz.wav
+```
+
+This mode generates hard frequency steps. Each step has a constant frequency and no fade at the edges.
+
+Generate step-wise chirp with faded step edges:
+
+```commandline
+chirp-generating --mode step-wise-faded --start-freq 100 --end-freq 24000 --sample-rate 48000 --duration 2.4 --steps 12 --output-filename step_faded_chirp_100-24000Hz.wav
+```
+
+This mode generates the same frequency steps, but fades the beginning and end of every step to reduce clicks and vertical edge artifacts in spectrograms.
+
+Available chirp generator arguments:
+
+```text
+--mode             Chirp generation mode: log, step-wise, or step-wise-faded
+--start-freq       Start frequency in Hz
+--end-freq         End frequency in Hz
+--sample-rate      Sample rate in Hz
+--duration         Chirp duration in seconds
+--steps            Number of frequency steps for step-wise mode
+--amplitude        Signal amplitude in range 0-1
+--output-filename  Output wav filename
+```

@@ -28,6 +28,7 @@ setup(
     entry_points={
         "console_scripts": [
             "testbed-recording-tool=testbed_recording_tool.main:main",
+            "chirp-generating=testbed_recording_tool.chirp_generating:main",
         ],
     },
 )
