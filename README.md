@@ -72,6 +72,33 @@ Run recording:
 testbed-recording-tool --config config.json --data-folder test1 --output-filename dobot_mg400_black_needle_40-20khz_05.wav
 ```
 
+Available arguments:
+
+```text
+--config            Path to json config file
+--data-folder       Folder containing reference/*.wav and receiving audio/*.wav
+--output-filename   Base filename for recorded wavfile
+--show-spectrogram  Display spectrogram of the recorded audio after recording
+```
+
+The tool adds a timestamp to the output filename. For example:
+
+```text
+dobot_mg400_black_needle_40-20khz_05.wav
+```
+
+is saved as:
+
+```text
+dobot_mg400_black_needle_40-20khz_05_2026-06-12_14.35.00.wav
+```
+
+To display the spectrogram after recording:
+
+```commandline
+testbed-recording-tool --config config.json --data-folder test1 --output-filename dobot_mg400_black_needle_40-20khz_05.wav --show-spectrogram
+```
+
 The tool uploads the chirp from `test1/reference` to Raspberry Pi, starts:
 
 ```commandline

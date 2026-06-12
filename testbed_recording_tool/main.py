@@ -45,7 +45,7 @@ def main():
 
 
 def _timestamped_output_filename(output_filename):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
     if output_filename.lower().endswith(".wav"):
         return f"{output_filename[:-4]}_{timestamp}.wav"
     return f"{output_filename}_{timestamp}.wav"
