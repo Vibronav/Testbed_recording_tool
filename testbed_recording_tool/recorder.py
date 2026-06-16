@@ -66,12 +66,14 @@ def record_with_config(data_folder, output_filename):
 def record_test(data_folder, output_filename, remote_dir):
     data_path = Path(data_folder)
     local_chirp = prepare_output_folder(data_path)
+    local_asoundrc = Path(__file__).with_name("asoundrc.txt")
     sample_rate = get_wav_sample_rate(local_chirp)
 
     if not output_filename.lower().endswith(".wav"):
         output_filename = f"{output_filename}.wav"
 
     audio_path = data_path / "audio"
+    audio_path.mkdir(parents=True, exist_ok=True)
     local_recording = audio_path / output_filename
 
     remote_base = posixpath.join(remote_dir, data_path.name)
@@ -81,6 +83,7 @@ def record_test(data_folder, output_filename, remote_dir):
     remote_recording = posixpath.join(remote_audio_dir, output_filename)
 
     ensure_remote_directories(remote_reference_dir, remote_audio_dir)
+    upload_file(local_asoundrc, "/home/pi/.asoundrc")
     upload_file(local_chirp, remote_chirp)
     start_recording_and_play_chirp(remote_chirp, remote_recording, sample_rate)
     download_file(remote_recording, local_recording)
@@ -119,7 +122,7 @@ def start_recording_and_play_chirp(remote_chirp, remote_recording, sample_rate):
     time.sleep(RECORD_WARMUP_SECONDS)
     exec_remote(f"{aplay_command} >/tmp/testbed_aplay.log 2>&1")
     time.sleep(POST_PLAYBACK_PADDING_SECONDS)
-    exec_remote(f"kill -INT {record_pid}")
+    exec_remote(f"kill -INT {record_pid} >/dev/null 2>&1 || true")
     time.sleep(0.5)
 
 

@@ -1,6 +1,8 @@
 import wave
 from pathlib import Path
 
+from scipy.io import wavfile
+
 
 def ensure_output_structure(output_folder):
     output_path = Path(output_folder)
@@ -33,5 +35,9 @@ def find_reference_chirp(output_folder):
 
 
 def get_wav_sample_rate(path):
-    with wave.open(str(path), "rb") as wav:
-        return wav.getframerate()
+    try:
+        sample_rate, _ = wavfile.read(path)
+        return sample_rate
+    except ValueError:
+        with wave.open(str(path), "rb") as wav:
+            return wav.getframerate()
