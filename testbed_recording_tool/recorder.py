@@ -108,21 +108,20 @@ def download_file(remote_path, local_path):
 
 def start_recording_and_play_chirp(remote_chirp, remote_recording, sample_rate):
     arecord_parts = [
-        "arecord", "-D", RECORD_DEVICE, "-c", str(CHANNELS), "-r", str(sample_rate),
+        "nohup", "arecord", "-D", RECORD_DEVICE, "-c", str(CHANNELS), "-r", str(sample_rate),
         "-f", SAMPLE_FORMAT, "-t", "wav", "-v", remote_recording,
     ]
-    aplay_parts = [
-        "aplay", remote_chirp,
-    ]
+    aplay_parts = ["aplay", remote_chirp]
     arecord_command = " ".join(shlex.quote(part) for part in arecord_parts)
     aplay_command = " ".join(shlex.quote(part) for part in aplay_parts)
     exec_remote(f"rm -f {shlex.quote(remote_recording)}")
 
-    record_pid = exec_remote(f"{arecord_command} >/tmp/testbed_arecord.log 2>&1 & echo $!")
+    start_command = f"{arecord_command} >/tmp/testbed_arecord.log 2>&1 & echo $!"
+    exec_remote(start_command)
     time.sleep(RECORD_WARMUP_SECONDS)
     exec_remote(f"{aplay_command} >/tmp/testbed_aplay.log 2>&1")
     time.sleep(POST_PLAYBACK_PADDING_SECONDS)
-    exec_remote(f"kill -INT {record_pid} >/dev/null 2>&1 || true")
+    exec_remote(f"pkill -INT -f {shlex.quote(f'arecord -D {RECORD_DEVICE}')} >/dev/null 2>&1 || true")
     time.sleep(0.5)
 
 
