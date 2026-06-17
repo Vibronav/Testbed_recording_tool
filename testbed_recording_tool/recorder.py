@@ -9,7 +9,7 @@ from .chirp import get_wav_sample_rate, prepare_output_folder
 from .config import config
 
 
-RECORD_DEVICE = "dmic_sv_shared"
+RECORD_DEVICE = "dmic_sv_shared_1channel"
 CHANNELS = 1
 SAMPLE_FORMAT = "S32_LE"
 RECORD_WARMUP_SECONDS = 0.2

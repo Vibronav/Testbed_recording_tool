@@ -38,3 +38,10 @@ pcm.dmic_sv_shared {
 		format S32_LE
 	}
 }
+
+pcm.dmic_sv_shared_1channel {
+	type plug
+	slave.pcm "dmic_sv_shared"
+	slave.channels 2
+	ttable.0.0 1
+}
