@@ -9,7 +9,7 @@ from .chirp import get_wav_sample_rate, prepare_output_folder
 from .config import config
 
 
-RECORD_DEVICE = "dmic_sv_shared"
+RECORD_DEVICE = "dmic_sv_shared_1channel"
 CHANNELS = 1
 SAMPLE_FORMAT = "S32_LE"
 RECORD_WARMUP_SECONDS = 0.2
@@ -66,12 +66,14 @@ def record_with_config(data_folder, output_filename):
 def record_test(data_folder, output_filename, remote_dir):
     data_path = Path(data_folder)
     local_chirp = prepare_output_folder(data_path)
+    local_asoundrc = Path(__file__).with_name("asoundrc.txt")
     sample_rate = get_wav_sample_rate(local_chirp)
 
     if not output_filename.lower().endswith(".wav"):
         output_filename = f"{output_filename}.wav"
 
     audio_path = data_path / "audio"
+    audio_path.mkdir(parents=True, exist_ok=True)
     local_recording = audio_path / output_filename
 
     remote_base = posixpath.join(remote_dir, data_path.name)
@@ -81,6 +83,7 @@ def record_test(data_folder, output_filename, remote_dir):
     remote_recording = posixpath.join(remote_audio_dir, output_filename)
 
     ensure_remote_directories(remote_reference_dir, remote_audio_dir)
+    upload_file(local_asoundrc, "/home/pi/.asoundrc")
     upload_file(local_chirp, remote_chirp)
     start_recording_and_play_chirp(remote_chirp, remote_recording, sample_rate)
     download_file(remote_recording, local_recording)
@@ -105,21 +108,20 @@ def download_file(remote_path, local_path):
 
 def start_recording_and_play_chirp(remote_chirp, remote_recording, sample_rate):
     arecord_parts = [
-        "arecord", "-D", RECORD_DEVICE, "-c", str(CHANNELS), "-r", str(sample_rate),
+        "nohup", "arecord", "-D", RECORD_DEVICE, "-c", str(CHANNELS), "-r", str(sample_rate),
         "-f", SAMPLE_FORMAT, "-t", "wav", "-v", remote_recording,
     ]
-    aplay_parts = [
-        "aplay", remote_chirp,
-    ]
+    aplay_parts = ["aplay", remote_chirp]
     arecord_command = " ".join(shlex.quote(part) for part in arecord_parts)
     aplay_command = " ".join(shlex.quote(part) for part in aplay_parts)
     exec_remote(f"rm -f {shlex.quote(remote_recording)}")
 
-    record_pid = exec_remote(f"{arecord_command} >/tmp/testbed_arecord.log 2>&1 & echo $!")
+    start_command = f"{arecord_command} >/tmp/testbed_arecord.log 2>&1 & echo $!"
+    exec_remote(start_command)
     time.sleep(RECORD_WARMUP_SECONDS)
     exec_remote(f"{aplay_command} >/tmp/testbed_aplay.log 2>&1")
     time.sleep(POST_PLAYBACK_PADDING_SECONDS)
-    exec_remote(f"kill -INT {record_pid}")
+    exec_remote(f"pkill -INT -f {shlex.quote(f'arecord -D {RECORD_DEVICE}')} >/dev/null 2>&1 || true")
     time.sleep(0.5)
 
 

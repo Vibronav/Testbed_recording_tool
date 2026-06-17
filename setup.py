@@ -23,7 +23,9 @@ setup(
     packages=find_packages(),
     install_requires=install_requires,
     extras_require={},
-    package_data={},
+    package_data={
+        "testbed_recording_tool": ["asoundrc.txt"],
+    },
     data_files=[],
     entry_points={
         "console_scripts": [
