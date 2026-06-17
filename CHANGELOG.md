@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Added `chirp-generating` script for logarithmic and step-wise chirp wavfile generation.
 
+### Fixed
+- Fix audio recording with only 1 channel
+
 ## [1.0.0] - 2026-05-14
 ### Added
 - Added CLI recording flow for Raspberry Pi testbed acquisition.
